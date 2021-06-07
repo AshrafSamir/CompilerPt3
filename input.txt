@@ -1,0 +1,15 @@
+sum:=0;
+for i from 1 to 11 inc 2
+startfor
+write i;
+sum:=sum+i
+endfor;
+write sum;
+
+sum:=0;
+for i from 1 to 11 inc 2
+startfor
+sum:=sum+i;
+if i=7 then break end
+endfor;
+write sum
