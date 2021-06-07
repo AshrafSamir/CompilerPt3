@@ -909,19 +909,17 @@ int Evaluate(TreeNode* node, SymbolTable* symbol_table, int* variables)
 bool RunProgram(TreeNode* node, SymbolTable* symbol_table, int* variables)
 {
     bool isBreak = false;
+
+    if(node->node_kind == BREAK_NODE) return true;
+
     if(node->node_kind==IF_NODE)
     {
         int cond=Evaluate(node->child[0], symbol_table, variables);
-        if(cond)
-        {
-            if(node->child[1]->node_kind == BREAK_NODE)return !isBreak;
-            RunProgram(node->child[1], symbol_table, variables);
-        }
-        else if(node->child[2])
-        {
-            if(node->child[2]->node_kind == BREAK_NODE)return !isBreak;
-            RunProgram(node->child[2], symbol_table, variables);
-        }
+        if(cond)isBreak |= RunProgram(node->child[1], symbol_table, variables);
+
+        else if(node->child[2])isBreak |= RunProgram(node->child[2], symbol_table, variables);
+
+
     }
     if(node->node_kind==ASSIGN_NODE)
     {
@@ -942,7 +940,7 @@ bool RunProgram(TreeNode* node, SymbolTable* symbol_table, int* variables)
     {
         do
         {
-           RunProgram(node->child[0], symbol_table, variables);
+           isBreak |= RunProgram(node->child[0], symbol_table, variables);
         }
         while(!Evaluate(node->child[1], symbol_table, variables));
     }
@@ -959,8 +957,12 @@ bool RunProgram(TreeNode* node, SymbolTable* symbol_table, int* variables)
         {
             if(*i > Evaluate(node->child[2], symbol_table, variables))break;
             if(node->child[4]->node_kind == BREAK_NODE)break;
-            bool isBr = RunProgram(node->child[4], symbol_table, variables);
-            if(isBr)break;
+            isBreak |= RunProgram(node->child[4], symbol_table, variables);
+            if(isBreak)
+            {
+                isBreak = false;
+                break;
+            }
 
             *i += Evaluate(node->child[3], symbol_table, variables);
 
@@ -968,7 +970,8 @@ bool RunProgram(TreeNode* node, SymbolTable* symbol_table, int* variables)
         while(*i!= Evaluate(node->child[2], symbol_table, variables));
     }
 
-    if(node->sibling) RunProgram(node->sibling, symbol_table, variables);
+    if(node->sibling)  isBreak |= RunProgram(node->sibling, symbol_table, variables);
+    return isBreak;
 }
 
 void RunProgram(TreeNode* syntax_tree, SymbolTable* symbol_table)

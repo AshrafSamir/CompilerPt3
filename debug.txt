@@ -2,158 +2,6 @@ Start StmtSeq
 Start Stmt
 Start AssignStmt
 Start Match
-[1] := (Assign)
-Start Match
-[1] 0 (Num)
-Start Expr
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[1] ; (SemiColon)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-End Expr
-End AssignStmt
-End Stmt
-Start Match
-[2] for (From)
-Start Stmt
-Start ForStmt
-Start Match
-[2] i (ID)
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[2] from (To)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-Start Match
-[2] 1 (Num)
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[2] to (Inc)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-Start Match
-[2] 11 (Num)
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[2] inc (StartFor)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-Start Match
-[2] 2 (Num)
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[3] startfor (EndFor)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-Start Match
-[4] write (Write)
-Start StmtSeq
-Start Stmt
-Start WriteStmt
-Start Match
-[4] i (ID)
-Start Expr
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[4] ; (SemiColon)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-End Expr
-End WriteStmt
-End Stmt
-Start Match
-[5] sum (ID)
-Start Stmt
-Start AssignStmt
-Start Match
-[5] := (Assign)
-Start Match
-[5] sum (ID)
-Start Expr
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[5] + (Plus)
-End NewExpr
-End Factor
-End Term
-Start Match
-[5] i (ID)
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[6] endfor (Break)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-End Expr
-End AssignStmt
-End Stmt
-End StmtSeq
-Start Match
-[6] ; (SemiColon)
-End ForStmt
-End Stmt
-Start Match
-[7] write (Write)
-Start Stmt
-Start WriteStmt
-Start Match
-[7] sum (ID)
-Start Expr
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[7] ; (SemiColon)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-End Expr
-End WriteStmt
-End Stmt
-Start Match
-[9] sum (ID)
-Start Stmt
-Start AssignStmt
-Start Match
 [9] := (Assign)
 Start Match
 [9] 0 (Num)
@@ -172,83 +20,20 @@ End Expr
 End AssignStmt
 End Stmt
 Start Match
-[10] for (From)
-Start Stmt
-Start ForStmt
-Start Match
-[10] i (ID)
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[10] from (To)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-Start Match
-[10] 1 (Num)
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[10] to (Inc)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-Start Match
-[10] 11 (Num)
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[10] inc (StartFor)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-Start Match
-[10] 2 (Num)
-Start MathExpr
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[11] startfor (EndFor)
-End NewExpr
-End Factor
-End Term
-End MathExpr
-Start Match
-[12] sum (ID)
-Start StmtSeq
+[10] g (ID)
 Start Stmt
 Start AssignStmt
 Start Match
-[12] := (Assign)
+[10] := (Assign)
 Start Match
-[12] sum (ID)
+[10] 7 (Num)
 Start Expr
 Start MathExpr
 Start Term
 Start Factor
 Start NewExpr
 Start Match
-[12] + (Plus)
-End NewExpr
-End Factor
-End Term
-Start Match
-[12] i (ID)
-Start Term
-Start Factor
-Start NewExpr
-Start Match
-[12] ; (SemiColon)
+[10] ; (SemiColon)
 End NewExpr
 End Factor
 End Term
@@ -257,67 +42,188 @@ End Expr
 End AssignStmt
 End Stmt
 Start Match
-[13] if (If)
+[11] for (From)
 Start Stmt
-Start IfStmt
+Start ForStmt
 Start Match
-[13] i (ID)
+[11] i (ID)
+Start MathExpr
+Start Term
+Start Factor
+Start NewExpr
+Start Match
+[11] from (To)
+End NewExpr
+End Factor
+End Term
+End MathExpr
+Start Match
+[11] 1 (Num)
+Start MathExpr
+Start Term
+Start Factor
+Start NewExpr
+Start Match
+[11] to (Inc)
+End NewExpr
+End Factor
+End Term
+End MathExpr
+Start Match
+[11] 11 (Num)
+Start MathExpr
+Start Term
+Start Factor
+Start NewExpr
+Start Match
+[11] inc (StartFor)
+End NewExpr
+End Factor
+End Term
+End MathExpr
+Start Match
+[11] 2 (Num)
+Start MathExpr
+Start Term
+Start Factor
+Start NewExpr
+Start Match
+[12] startfor (EndFor)
+End NewExpr
+End Factor
+End Term
+End MathExpr
+Start Match
+[13] sum (ID)
+Start StmtSeq
+Start Stmt
+Start AssignStmt
+Start Match
+[13] := (Assign)
+Start Match
+[13] sum (ID)
 Start Expr
 Start MathExpr
 Start Term
 Start Factor
 Start NewExpr
 Start Match
-[13] = (Equal)
+[13] + (Plus)
+End NewExpr
+End Factor
+End Term
+Start Match
+[13] i (ID)
+Start Term
+Start Factor
+Start NewExpr
+Start Match
+[13] ; (SemiColon)
 End NewExpr
 End Factor
 End Term
 End MathExpr
+End Expr
+End AssignStmt
+End Stmt
 Start Match
-[13] 7 (Num)
+[14] if (If)
+Start Stmt
+Start IfStmt
+Start Match
+[14] i (ID)
+Start Expr
 Start MathExpr
 Start Term
 Start Factor
 Start NewExpr
 Start Match
-[13] then (Then)
+[14] = (Equal)
+End NewExpr
+End Factor
+End Term
+End MathExpr
+Start Match
+[14] 7 (Num)
+Start MathExpr
+Start Term
+Start Factor
+Start NewExpr
+Start Match
+[14] then (Then)
 End NewExpr
 End Factor
 End Term
 End MathExpr
 End Expr
 Start Match
-[13] break (Repeat)
+[14] if (If)
 Start StmtSeq
 Start Stmt
-Start Break
+Start IfStmt
 Start Match
-[13] end (End)
-End Break
-End Stmt
-End StmtSeq
-Start Match
-[14] endfor (Break)
-End IfStmt
-End Stmt
-End StmtSeq
-Start Match
-[14] ; (SemiColon)
-End ForStmt
-End Stmt
-Start Match
-[15] write (Write)
-Start Stmt
-Start WriteStmt
-Start Match
-[15] sum (ID)
+[14] g (ID)
 Start Expr
 Start MathExpr
 Start Term
 Start Factor
 Start NewExpr
 Start Match
-[15]  (EndFile)
+[14] = (Equal)
+End NewExpr
+End Factor
+End Term
+End MathExpr
+Start Match
+[14] 7 (Num)
+Start MathExpr
+Start Term
+Start Factor
+Start NewExpr
+Start Match
+[14] then (Then)
+End NewExpr
+End Factor
+End Term
+End MathExpr
+End Expr
+Start Match
+[14] break (Repeat)
+Start StmtSeq
+Start Stmt
+Start Break
+Start Match
+[14] end (End)
+End Break
+End Stmt
+End StmtSeq
+Start Match
+[14] end (End)
+End IfStmt
+End Stmt
+End StmtSeq
+Start Match
+[15] endfor (Break)
+End IfStmt
+End Stmt
+End StmtSeq
+Start Match
+[15] ; (SemiColon)
+End ForStmt
+End Stmt
+Start Match
+[16] write (Write)
+Start Stmt
+Start WriteStmt
+Start Match
+[16] sum (ID)
+Start Expr
+Start MathExpr
+Start Term
+Start Factor
+Start NewExpr
+Start Match
+[22]  (EndFile)
 End NewExpr
 End Factor
 End Term

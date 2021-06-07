@@ -1,15 +1,22 @@
-sum:=0;
+{sum:=0;
 for i from 1 to 11 inc 2
 startfor
 write i;
 sum:=sum+i
 endfor;
-write sum;
+write sum;}
 
 sum:=0;
+g := 7;
 for i from 1 to 11 inc 2
 startfor
 sum:=sum+i;
-if i=7 then break end
+if i=7 then if g=7 then break end end
 endfor;
-write sum
+write sum 
+
+
+
+
+
+
