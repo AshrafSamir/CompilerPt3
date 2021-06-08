@@ -234,11 +234,13 @@ const Token symbolic_tokens[]=
 const int num_symbolic_tokens=sizeof(symbolic_tokens)/sizeof(symbolic_tokens[0]);
 
 inline bool IsDigit(char ch){return (ch>='0' && ch<='9');}
+inline bool IsMinus(char ch){return (ch == '-');}
 inline bool IsLetter(char ch){return ((ch>='a' && ch<='z') || (ch>='A' && ch<='Z'));}
 inline bool IsLetterOrUnderscore(char ch){return (IsLetter(ch) || ch=='_');}
 
 void GetNextToken(CompilerInfo* pci, Token* ptoken)
 {
+    bool isNeg = false;
     ptoken->type=ERROR;
     ptoken->str[0]=0;
 
@@ -259,6 +261,7 @@ void GetNextToken(CompilerInfo* pci, Token* ptoken)
 
     if(i<num_symbolic_tokens)
     {
+
         if(symbolic_tokens[i].type==LEFT_BRACE)
         {
             pci->in_file.Advance(strlen(symbolic_tokens[i].str));
@@ -271,6 +274,7 @@ void GetNextToken(CompilerInfo* pci, Token* ptoken)
     else if(IsDigit(s[0]))
     {
         int j=1;
+
         while(IsDigit(s[j])) j++;
 
         ptoken->type=NUM;
@@ -381,7 +385,8 @@ TreeNode* NewExpr(CompilerInfo* pci, ParseInfo* ppi)
         TreeNode* tree=new TreeNode;
         tree->node_kind=NUM_NODE;
         char* num_str=ppi->next_token.str;
-        tree->num=0; while(*num_str) tree->num=tree->num*10+((*num_str++)-'0');
+        //add
+        tree->num=0;  tree->num=strtol(num_str, nullptr, 10);
         tree->line_num=pci->in_file.cur_line_num;
         Match(pci, ppi, ppi->next_token.type);
 
@@ -469,8 +474,22 @@ TreeNode* MathExpr(CompilerInfo* pci, ParseInfo* ppi)
 {
     pci->debug_file.Out("Start MathExpr");
 
-    TreeNode* tree=Term(pci, ppi);
+    //add
+    if(ppi->next_token.type == MINUS)
+    {
+        Match(pci, ppi, ppi->next_token.type);
+        TreeNode* tree=new TreeNode;
+        tree->node_kind=NUM_NODE;
+        char* num_str=ppi->next_token.str;
+        tree->num=0;  tree->num=strtol(num_str, nullptr, 10) * -1;
+        tree->line_num=pci->in_file.cur_line_num;
+        Match(pci, ppi, ppi->next_token.type);
 
+        pci->debug_file.Out("End MathExpr");
+        return tree;
+    }
+
+    TreeNode* tree=Term(pci, ppi);
     while(ppi->next_token.type==PLUS || ppi->next_token.type==MINUS)
     {
         TreeNode* new_tree=new TreeNode;
@@ -492,6 +511,21 @@ TreeNode* MathExpr(CompilerInfo* pci, ParseInfo* ppi)
 TreeNode* Expr(CompilerInfo* pci, ParseInfo* ppi)
 {
     pci->debug_file.Out("Start Expr");
+
+    //add
+    if(ppi->next_token.type == MINUS)
+    {
+        Match(pci, ppi, ppi->next_token.type);
+        TreeNode* tree=new TreeNode;
+        tree->node_kind=NUM_NODE;
+        char* num_str=ppi->next_token.str;
+        tree->num=0;  tree->num=strtol(num_str, nullptr, 10) * -1;
+        tree->line_num=pci->in_file.cur_line_num;
+        Match(pci, ppi, ppi->next_token.type);
+
+        pci->debug_file.Out("End Expr");
+        return tree;
+    }
 
     TreeNode* tree=MathExpr(pci, ppi);
 
@@ -955,7 +989,8 @@ bool RunProgram(TreeNode* node, SymbolTable* symbol_table, int* variables)
 
         do
         {
-            if(*i > Evaluate(node->child[2], symbol_table, variables))break;
+            if((*i > Evaluate(node->child[2], symbol_table, variables)) &&(Evaluate(node->child[3], symbol_table, variables) > 0))break;
+            if((*i < Evaluate(node->child[2], symbol_table, variables)) &&(Evaluate(node->child[3], symbol_table, variables) < 0))break;
             if(node->child[4]->node_kind == BREAK_NODE)break;
             isBreak |= RunProgram(node->child[4], symbol_table, variables);
             if(isBreak)
