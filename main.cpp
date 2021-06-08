@@ -474,21 +474,6 @@ TreeNode* MathExpr(CompilerInfo* pci, ParseInfo* ppi)
 {
     pci->debug_file.Out("Start MathExpr");
 
-    //add
-    if(ppi->next_token.type == MINUS)
-    {
-        Match(pci, ppi, ppi->next_token.type);
-        TreeNode* tree=new TreeNode;
-        tree->node_kind=NUM_NODE;
-        char* num_str=ppi->next_token.str;
-        tree->num=0;  tree->num=strtol(num_str, nullptr, 10) * -1;
-        tree->line_num=pci->in_file.cur_line_num;
-        Match(pci, ppi, ppi->next_token.type);
-
-        pci->debug_file.Out("End MathExpr");
-        return tree;
-    }
-
     TreeNode* tree=Term(pci, ppi);
     while(ppi->next_token.type==PLUS || ppi->next_token.type==MINUS)
     {
@@ -519,7 +504,7 @@ TreeNode* Expr(CompilerInfo* pci, ParseInfo* ppi)
         TreeNode* tree=new TreeNode;
         tree->node_kind=NUM_NODE;
         char* num_str=ppi->next_token.str;
-        tree->num=0;  tree->num=strtol(num_str, nullptr, 10) * -1;
+        tree->num=0;  tree->num=(tree->num*10+((*num_str++)-'0')) * -1;
         tree->line_num=pci->in_file.cur_line_num;
         Match(pci, ppi, ppi->next_token.type);
 
@@ -624,10 +609,10 @@ TreeNode* ForStmt(CompilerInfo* pci, ParseInfo* ppi)
     tree->node_kind=FOR_NODE;
     tree->line_num=pci->in_file.cur_line_num;
 
-    Match(pci, ppi, FOR); tree->child[0]=MathExpr(pci, ppi);
-    Match(pci, ppi, FROM); tree->child[1]=MathExpr(pci, ppi);
-    Match(pci, ppi, TO); tree->child[2]=MathExpr(pci, ppi);
-    Match(pci, ppi, INC); tree->child[3]=MathExpr(pci, ppi);
+    Match(pci, ppi, FOR); tree->child[0]=Expr(pci, ppi);
+    Match(pci, ppi, FROM); tree->child[1]=Expr(pci, ppi);
+    Match(pci, ppi, TO); tree->child[2]=Expr(pci, ppi);
+    Match(pci, ppi, INC); tree->child[3]=Expr(pci, ppi);
     Match(pci, ppi, START_FOR);tree->child[4]=StmtSeq(pci, ppi);
     Match(pci, ppi, END_FOR);
 
