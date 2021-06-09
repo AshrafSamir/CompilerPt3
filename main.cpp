@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -8,18 +7,221 @@ using namespace std;
 /*
 { Sample program
   in TINY language
-  compute factorial
+  compute for loop and break & negative increment
 }
 
-read x; {input an integer}
-if 0<x then {compute only if x>=1}
-  fact:=1;
-  repeat
-    fact := fact * x;
-    x:=x-1
-  until x=0;
-  write fact {output factorial}
-end
+sum:=0;
+for i from 1 to 11 inc 2
+startfor
+write i;
+sum:=sum+i
+endfor;
+write sum;
+
+
+sum:=0;
+n := 11;
+for i from 1 to n inc 1
+startfor
+write i;
+sum:=sum+i;
+if i=7 then
+    if i=7 then
+        break
+    end
+ end
+endfor;
+write sum;
+
+
+for i from 0 to 10 inc 1
+startfor
+    for j from 0 to 2 inc 1
+    startfor
+        write i
+    endfor
+endfor;
+
+
+for i from 0 to 10 inc 1
+startfor
+    for j from 0 to 3 inc 1
+    startfor
+        write i;
+    if i=2 then
+        break
+    end
+    endfor
+endfor;
+
+
+for i from 0 to 10 inc 1
+startfor
+    for j from 0 to 1 inc 1
+    startfor
+    for k from 0 to 2 inc 1
+        startfor
+        write i
+        endfor
+    endfor
+endfor;
+
+
+n := 0;
+for i from 0 to 10 inc 1
+startfor
+    for j from 0 to 1 inc 1
+    startfor
+    for k from 0 to 2 inc 1
+        startfor
+        write i;
+        if i = 2 then n := 1 end;
+        if i = 2 then break end
+        endfor;
+    if n = 1 then break end
+    endfor;
+if n = 1 then break end
+endfor;
+
+
+sum:=0;
+for i from 11 to 1 inc -2
+startfor
+write i;
+sum:=sum+i
+endfor;
+write sum;
+z := 1-3;
+write z;
+
+
+sum:=0;
+for i from -11 to -1 inc 2
+startfor
+write i;
+sum:=sum+i
+endfor;
+
+sum:=0;
+for i from -12 to -20 inc -2
+startfor
+write i;
+sum:=sum+i;
+if i=-18 then break end
+endfor;
+write sum;
+
+sum:=0;
+for i from 1 to 11 inc 2
+startfor
+write i;
+sum:=sum+i
+endfor;
+write sum;
+
+
+sum:=0;
+n := 11;
+for i from 1 to n inc 1
+startfor
+write i;
+sum:=sum+i;
+if i=7 then
+    if i=7 then
+        break
+    end
+ end
+endfor;
+write sum;
+
+
+for i from 0 to 10 inc 1
+startfor
+    for j from 0 to 2 inc 1
+    startfor
+        write i
+    endfor
+endfor;
+
+
+for i from 0 to 10 inc 1
+startfor
+    for j from 0 to 3 inc 1
+    startfor
+        write i;
+    if i=2 then
+        break
+    end
+    endfor
+endfor;
+
+
+for i from 0 to 10 inc 1
+startfor
+    for j from 0 to 1 inc 1
+    startfor
+    for k from 0 to 2 inc 1
+        startfor
+        write i
+        endfor
+    endfor
+endfor;
+
+
+n := 0;
+for i from 0 to 10 inc 1
+startfor
+    for j from 0 to 1 inc 1
+    startfor
+    for k from 0 to 2 inc 1
+        startfor
+        write i;
+        if i = 2 then n := 1 end;
+        if i = 2 then break end
+        endfor;
+    if n = 1 then break end
+    endfor;
+if n = 1 then break end
+endfor;
+
+
+sum:=0;
+for i from 11 to 1 inc -2
+startfor
+write i;
+sum:=sum+i
+endfor;
+write sum;
+z := 1-3;
+write z;
+
+
+sum:=0;
+for i from -11 to -1 inc 2
+startfor
+write i;
+sum:=sum+i
+endfor;
+
+sum:=0;
+for i from -12 to -20 inc -2
+startfor
+write i;
+sum:=sum+i;
+if i=-18 then break end
+endfor;
+write sum;
+
+sum:=0;
+for i from 6+5 to 1 inc -2
+startfor
+write i;
+sum:=sum+i
+endfor;
+write sum;
+z := 1-3;
+write z
+
 */
 
 // sequence of statements separated by ;
@@ -159,6 +361,7 @@ struct CompilerInfo
 
 #define MAX_TOKEN_LEN 40
 
+//add the new tokens for for loop and break
 enum TokenType{
                 IF, THEN, ELSE, END, REPEAT, FOR, FROM, TO, INC, START_FOR, END_FOR, BREAK, UNTIL, READ, WRITE,
                 ASSIGN, EQUAL, LESS_THAN,
@@ -192,6 +395,7 @@ struct Token
     Token(TokenType _type, const char* _str) {type=_type; Copy(str, _str);}
 };
 
+//add the new tokens in reserved words
 const Token reserved_words[]=
 {
     Token(IF, "if"),
@@ -234,7 +438,6 @@ const Token symbolic_tokens[]=
 const int num_symbolic_tokens=sizeof(symbolic_tokens)/sizeof(symbolic_tokens[0]);
 
 inline bool IsDigit(char ch){return (ch>='0' && ch<='9');}
-inline bool IsMinus(char ch){return (ch == '-');}
 inline bool IsLetter(char ch){return ((ch>='a' && ch<='z') || (ch>='A' && ch<='Z'));}
 inline bool IsLetterOrUnderscore(char ch){return (IsLetter(ch) || ch=='_');}
 
@@ -320,6 +523,9 @@ void GetNextToken(CompilerInfo* pci, Token* ptoken)
 // factor -> newexpr { ^ newexpr }    right associative
 // newexpr -> ( mathexpr ) | number | identifier
 
+
+
+//add new node for break and for
 enum NodeKind{
                 IF_NODE, REPEAT_NODE, ASSIGN_NODE, FOR_NODE, READ_NODE, WRITE_NODE,
                 OPER_NODE, NUM_NODE, ID_NODE, BREAK_NODE
@@ -379,13 +585,30 @@ TreeNode* NewExpr(CompilerInfo* pci, ParseInfo* ppi)
 {
     pci->debug_file.Out("Start NewExpr");
 
+    //if grammar functions reached to the end and there is a minus token treat it as num node but negative
+    if(ppi->next_token.type == MINUS)
+    {
+        // match first the minus symbol token
+        Match(pci, ppi, ppi->next_token.type);
+        TreeNode* tree=new TreeNode;
+        tree->node_kind=NUM_NODE;
+        char* num_str=ppi->next_token.str;
+        //new function to calculate the number called (strtol())
+        tree->num=0; tree->num=strtol(num_str, nullptr, 10) * -1;
+        tree->line_num=pci->in_file.cur_line_num;
+        Match(pci, ppi, ppi->next_token.type);
+
+        pci->debug_file.Out("End NewExpr");
+        return tree;
+    }
+
     // Compare the next token with the First() of possible statements
     if(ppi->next_token.type==NUM)
     {
         TreeNode* tree=new TreeNode;
         tree->node_kind=NUM_NODE;
         char* num_str=ppi->next_token.str;
-        //add
+        //new function to calculate the number called (strtol())
         tree->num=0;  tree->num=strtol(num_str, nullptr, 10);
         tree->line_num=pci->in_file.cur_line_num;
         Match(pci, ppi, ppi->next_token.type);
@@ -497,21 +720,6 @@ TreeNode* Expr(CompilerInfo* pci, ParseInfo* ppi)
 {
     pci->debug_file.Out("Start Expr");
 
-    //add
-    if(ppi->next_token.type == MINUS)
-    {
-        Match(pci, ppi, ppi->next_token.type);
-        TreeNode* tree=new TreeNode;
-        tree->node_kind=NUM_NODE;
-        char* num_str=ppi->next_token.str;
-        tree->num=0;  tree->num=(tree->num*10+((*num_str++)-'0')) * -1;
-        tree->line_num=pci->in_file.cur_line_num;
-        Match(pci, ppi, ppi->next_token.type);
-
-        pci->debug_file.Out("End Expr");
-        return tree;
-    }
-
     TreeNode* tree=MathExpr(pci, ppi);
 
     if(ppi->next_token.type==EQUAL || ppi->next_token.type==LESS_THAN)
@@ -605,6 +813,7 @@ TreeNode* ForStmt(CompilerInfo* pci, ParseInfo* ppi)
 {
     pci->debug_file.Out("Start ForStmt");
 
+    // make it for node then make every child call Expr funtcion and match the tokens
     TreeNode* tree=new TreeNode;
     tree->node_kind=FOR_NODE;
     tree->line_num=pci->in_file.cur_line_num;
@@ -619,7 +828,7 @@ TreeNode* ForStmt(CompilerInfo* pci, ParseInfo* ppi)
     pci->debug_file.Out("End ForStmt");
     return tree;
 }
-//add
+// make it break node then just read the token break and match
 TreeNode* Break(CompilerInfo* pci, ParseInfo* ppi)
 {
     pci->debug_file.Out("Start Break");
@@ -679,7 +888,7 @@ TreeNode* StmtSeq(CompilerInfo* pci, ParseInfo* ppi)
     TreeNode* first_tree=Stmt(pci, ppi);
     TreeNode* last_tree=first_tree;
 
-    // If we did not reach one of the Follow() of StmtSeq(), we are not done yet
+    // If we did not reach one of the Follow() of StmtSeq(), we are not done yet same for end_for
     while(ppi->next_token.type!=ENDFILE && ppi->next_token.type!=END &&
           ppi->next_token.type!=ELSE && ppi->next_token.type!=UNTIL && ppi->next_token.type!=END_FOR)
     {
@@ -925,6 +1134,7 @@ int Evaluate(TreeNode* node, SymbolTable* symbol_table, int* variables)
     return 0;
 }
 
+//recursion function to return true if we found break statement in the nested statements
 bool RunProgram(TreeNode* node, SymbolTable* symbol_table, int* variables)
 {
     bool isBreak = false;
@@ -964,9 +1174,10 @@ bool RunProgram(TreeNode* node, SymbolTable* symbol_table, int* variables)
         while(!Evaluate(node->child[1], symbol_table, variables));
     }
 
-    //add
+    //do the following statements by recursion with child 4 and if u found break statement return while the first conditions not met
     if(node->node_kind==FOR_NODE)
     {
+        // always take the updated values from the childes with evaluate function and i (child of 0)by refrence
         int *i = &variables[symbol_table->Find(node->child[0]->id)->memloc];
          Evaluate(node->child[1], symbol_table, variables);
          Evaluate(node->child[2], symbol_table, variables);
@@ -985,9 +1196,8 @@ bool RunProgram(TreeNode* node, SymbolTable* symbol_table, int* variables)
             }
 
             *i += Evaluate(node->child[3], symbol_table, variables);
-
         }
-        while(*i!= Evaluate(node->child[2], symbol_table, variables));
+        while(true);
     }
 
     if(node->sibling)  isBreak |= RunProgram(node->sibling, symbol_table, variables);
